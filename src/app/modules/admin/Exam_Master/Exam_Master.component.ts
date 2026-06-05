@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Exam_Master_Service } from '../../../services/Exam_Master.service';
+import { Exam_Master_Service } from '../../../services/Exam_Master.Service';
 import { DialogBox_Component } from '../DialogBox/DialogBox.component';
 import { Exam_Master } from '../../../models/Exam_Master';
 import {MatDialog} from '@angular/material';import { ROUTES,Get_Page_Permission } from '../../../components/sidebar/sidebar.component';@Component({

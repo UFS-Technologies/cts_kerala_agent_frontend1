@@ -46,6 +46,7 @@ import { University_Exam_Month } from '../../../models/University_Exam_Month';
 import { THIS_EXPR, ThrowStmt } from '@angular/compiler/src/output/output_ast';
 import { NumberValueAccessor } from '@angular/forms';
 import { SKP_Status } from 'app/models/SKP_Status';
+import { Exam_Master_Service } from '../../../services/Exam_Master.Service';
 
 //import { debug } from 'console';
 
@@ -110,6 +111,11 @@ export class StudentComponent implements OnInit {
     Fees_tab_Edit: boolean = false;
     Course_View: boolean = false;
     Certificate_View:boolean=false;
+    Exam_View:boolean=false;
+    Exam_Data:any[];
+    Exam_Details_Data:any[];
+    Exam_Details_Hidden:boolean=false;
+    Selected_Exam:any;
     Course_Tab_Permission: any;
     Course_Tab_View: boolean = false;
     Course_Tab_Edit: boolean = false;
@@ -432,7 +438,7 @@ export class StudentComponent implements OnInit {
     Display_Plustwo_Certificate_:string;
     ImageFile_Plustwo_Certificate: any;
 
-constructor(public Student_Service_:Student_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog) { }
+constructor(public Student_Service_:Student_Service, private route: ActivatedRoute, private router: Router,public dialogBox: MatDialog, public Exam_Master_Service_:Exam_Master_Service) { }
 ngOnInit() 
 {
 
@@ -552,6 +558,7 @@ Tab_Click(Current_tab)
     this.Activity_View=false;
     this.Document_View_Option=false;
     this.Activity_Details_View=false;
+    this.Exam_View=false;
     if(Current_tab==1)
     {
         this.profile_View=true;
@@ -598,14 +605,65 @@ Tab_Click(Current_tab)
     }
 
     else if(Current_tab==7)
-
     {
-        
         this.Activity_Details_View=true;
-        
-
-        this.Get_Activity_Details(this.Student_Id)
+        this.Get_Activity_Details(this.Student_Id);
     }
+    else if(Current_tab==8)
+    {
+        this.Exam_View=true;
+        this.Exam_Details_Hidden=false;
+        this.Selected_Exam=null;
+        this.Load_Student_Exams(this.Student_Id);
+    }
+}
+
+Load_Student_Exams(Student_Id:number)
+{
+    this.Exam_Master_Service_.Search_Exam_Master_By_Student(Student_Id).subscribe(
+        (data:any) => {
+            if(data && data[0]) { this.Exam_Data = data[0]; }
+            else { this.Exam_Data = []; }
+        },
+        err => { console.error('Error loading exams', err); this.Exam_Data = []; }
+    );
+}
+
+View_Exam_Details(subject:any)
+{
+    // Find the exam record for this subject
+    let exam = this.Exam_Data.find(e => e.Subject_Id === subject.Subject_Id);
+    
+    if (exam) {
+        this.Selected_Exam = exam;
+        this.Exam_Details_Hidden = true;
+        this.Exam_Master_Service_.Get_Exam_Details_By_Master(exam.Exam_Master_Id).subscribe(
+            (data:any) => {
+                if(data && data[0]) { this.Exam_Details_Data = data[0]; }
+                else { this.Exam_Details_Data = []; }
+            },
+            err => { console.error('Error loading exam details', err); this.Exam_Details_Data = []; }
+        );
+    } else {
+        alert("No exam data found for this subject. The student has not completed this exam yet.");
+    }
+}
+
+Back_To_Exam_List()
+{
+    this.Exam_Details_Hidden = false;
+    this.Selected_Exam = null;
+}
+
+Get_Exam_Date(Subject_Id: number)
+{
+    if (this.Exam_Data) {
+        let exam = this.Exam_Data.find(e => e.Subject_Id === Subject_Id);
+        if (exam) {
+            return exam.Exam_Date;
+        }
+    }
+    return null;
 }
 isMobileMenu()
 {

@@ -45,6 +45,11 @@
             <div *ngIf="Certificate_View" style="height: 2px; background-color: #512DA8;margin-left: 9px;"></div>
             </li> 
 
+        <!-- Exam Tab -->
+        <li class="nav-item"  *ngIf="Student_Id_Edit>0 && Course_Id_Edit>0 && Registration==true && Course_Tab==true " (click)="Tab_Click(8)">
+            <a class="nav-link " data-toggle="tab"role="tab"aria-controls="Exam"aria-selected="true">Exam </a>
+            <div *ngIf="Exam_View" style="height: 2px; background-color: #512DA8;margin-left: 9px;"></div>
+        </li>
 
             <li class="nav-item" *ngIf="Student_Id_Edit>0 && Registration==true && Fees_Master_Id>0 && Course_Tab==true" (click)="Tab_Click(7)">
                 <!-- <div [hidden]="Fees_tab_View==false" ></div> -->
@@ -999,6 +1004,113 @@
             </div>
             </div>
             </div>
+
+        <!-- ============ EXAM TAB CONTENT ============ -->
+        <div class="mt-2" *ngIf="Exam_View" style="margin-left: 250px; background-color: white !important;
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+        border-radius: 12px; font-family: Nunito, sans-serif;">
+            <div id="Exam" style="background-color: #fff !important;">
+            <div class="dt-card__body" style="margin-left: 2%; padding: 20px;">
+
+                <!-- Exam List (Registered Subjects) -->
+                <div class="table-responsive" *ngIf="!Exam_Details_Hidden">
+                    <table class="table table-hover colour-change-title-searchsection-table heading-styles-as-gmail-format">
+                        <thead>
+                            <th>
+                                <h4><b style="color: #3f6ad8;font-weight: 900;">Subject Name</b></h4>
+                            </th>
+                            <th>
+                                <h4><b style="color: #3f6ad8;font-weight: 900;">Date of examination</b></h4>
+                            </th>
+                            <th></th>
+                        </thead>
+                        <tbody *ngFor="let subject of Student_Course_Subject_Data; let i = index">          
+                            <tr>
+                                <td>
+                                    <b style="color: #4ec9ee;font-weight: 900;font-size: 15px;">{{subject.Subject_Name}}</b>
+                                </td>
+                                <td>
+                                    <b style="color: #50c900;font-weight: 900;font-size: 15px;" *ngIf="Get_Exam_Date(subject.Subject_Id)">
+                                        {{ Get_Exam_Date(subject.Subject_Id) | date:'dd-MM-yyyy' }}
+                                    </b>
+                                    <b style="color: orange;font-weight: 900;font-size: 15px;" *ngIf="!Get_Exam_Date(subject.Subject_Id)">
+                                        Pending
+                                    </b>
+                                </td>
+                                <td>
+                                    <button class="save-button-style btnflot" style="text-transform: uppercase;" (click)="View_Exam_Details(subject)" type="button">View Details</button>
+                                </td>  
+                            </tr>
+                        </tbody>
+                        <tbody *ngIf="!Student_Course_Subject_Data || Student_Course_Subject_Data.length === 0">
+                            <tr>
+                                <td colspan="3" class="text-center" style="padding: 20px; color: #888;">No subjects registered.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Exam Details View -->
+                <div *ngIf="Exam_Details_Hidden">
+                    <div class="form-row mb-2">
+                        <div class="col-md-6">
+                            <h5 style="color: #512DA8; font-weight: 700; font-size: 16px;">
+                                Exam Details — {{Selected_Exam?.Subject_Name}}
+                            </h5>
+                            <p style="font-size: 13px; color: #444;">
+                                Date: {{Selected_Exam?.Exam_Date | date:'dd-MM-yyyy'}} &nbsp;|&nbsp;
+                                Mark Obtained: <strong>{{Selected_Exam?.Mark_Obtained}}</strong>
+                            </p>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button class="btn btn-sm btn-outline-secondary" (click)="Back_To_Exam_List()">
+                                ← Back to Exam List
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover" style="font-size: 13px;">
+                            <thead style="background-color: #512DA8; color: white;">
+                                <tr>
+                                    <th style="padding: 10px;">#</th>
+                                    <th style="padding: 10px;">Question</th>
+                                    <th style="padding: 10px;">Option A</th>
+                                    <th style="padding: 10px;">Option B</th>
+                                    <th style="padding: 10px;">Option C</th>
+                                    <th style="padding: 10px;">Option D</th>
+                                    <th style="padding: 10px;">Marked Answer</th>
+                                    <th style="padding: 10px;">Correct Answer</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let detail of Exam_Details_Data; let j = index"
+                                    [style.background-color]="detail.Question_Answer === detail.Correct_Answer ? '#f0fff4' : '#fff5f5'">
+                                    <td style="padding: 8px;">{{j + 1}}</td>
+                                    <td style="padding: 8px; font-weight: 600;">{{detail.Question_Name}}</td>
+                                    <td style="padding: 8px;">{{detail.Option_1}}</td>
+                                    <td style="padding: 8px;">{{detail.Option_2}}</td>
+                                    <td style="padding: 8px;">{{detail.Option_3}}</td>
+                                    <td style="padding: 8px;">{{detail.Option_4}}</td>
+                                    <td style="padding: 8px; font-weight: 700;"
+                                        [style.color]="detail.Question_Answer === detail.Correct_Answer ? '#16a34a' : '#dc2626'">
+                                        {{detail.Question_Answer}}
+                                        <span *ngIf="detail.Question_Answer === detail.Correct_Answer">&#10004;</span>
+                                        <span *ngIf="detail.Question_Answer !== detail.Correct_Answer">&#10008;</span>
+                                    </td>
+                                    <td style="padding: 8px; color: #16a34a; font-weight: 700;">{{detail.Correct_Answer}}</td>
+                                </tr>
+                                <tr *ngIf="!Exam_Details_Data || Exam_Details_Data.length === 0">
+                                    <td colspan="8" class="text-center" style="padding: 20px; color: #888;">No details available for this exam.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            </div>
+        </div>
+        <!-- ============ END EXAM TAB CONTENT ============ -->
 
         <!-- <div class="container-fluidprofile mt-2" *ngIf="Fees_View"> -->
         <div class=" mt-2" *ngIf="Fees_View" style="margin-left: 250px;background-color: white !important;

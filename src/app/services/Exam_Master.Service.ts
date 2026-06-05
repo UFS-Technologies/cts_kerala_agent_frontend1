@@ -34,5 +34,16 @@ Delete_Exam_Master(Exam_Master_Id)
 Get_Exam_Master(Exam_Master_Id)
 {
  return this.http.get(environment.BasePath +'Exam_Master/Get_Exam_Master/'+Exam_Master_Id);}
+
+Search_Exam_Master_By_Student(Student_Id):Observable<any>
+{
+ return this.http.get(environment.BasePath +'Exam_Master/Search_Exam_Master_By_Student/'+Student_Id);
 }
+
+Get_Exam_Details_By_Master(Exam_Master_Id):Observable<any>
+{
+ return this.http.get(environment.BasePath +'Exam_Master/Get_Exam_Details_By_Master/'+Exam_Master_Id);
+}
+}
+
 
