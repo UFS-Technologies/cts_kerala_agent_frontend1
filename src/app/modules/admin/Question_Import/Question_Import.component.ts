@@ -8,7 +8,7 @@ import { Course } from '../../../models/Course';
 import { Part } from '../../../models/Part';
 import { University } from '../../../models/University';
 import { Subject } from '../../../models/Subject';
-import { Course_Service } from '../../../services/Course.service';
+import { Course_Service } from '../../../services/Course.Service';
 import { Student_Course } from '../../../models/Student_Course';
 import { Question_Service } from '../../../services/Question.service';
 import { Student_Service } from '../../../services/Student.service';

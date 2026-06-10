@@ -13,6 +13,7 @@ export class Student_Course_Part
     Month_Status:Month_Status;
     Mark_List_Issue_Date:Date;
     Mark_List_Issue_Date_T:Date;
+    Mark_List_Status:string;
 
     Year:Year;
 constructor(values: Object = {})  

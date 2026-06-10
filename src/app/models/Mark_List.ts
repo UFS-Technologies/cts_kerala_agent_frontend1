@@ -29,6 +29,7 @@ Exam_Status_:Exam_Status;
 Issue_Date:Date;
 Course_Subject_Id:number;
 Grade:string;
+Mark_List_Status:string;
 constructor(values: Object = {})  
 {
 Object.assign(this, values) 

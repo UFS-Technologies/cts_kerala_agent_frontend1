@@ -759,7 +759,8 @@
                     <tr>
                         <td ><b style="color: #4ec9ee;font-weight: 900;font-size: 15px;">{{Part_D["Part_Name"]}}</b>&nbsp;&nbsp;&nbsp;
                             <b  style="color: #50c900;font-weight: 900;font-size: 15px;">{{Part_D["Month_Name"]}}</b>&nbsp;&nbsp;&nbsp;
-                               <b style="color: #50c900;font-weight: 900;font-size: 15px;">{{Part_D["Year_Name"]}}</b></td>
+                               <b style="color: #50c900;font-weight: 900;font-size: 15px;">{{Part_D["Year_Name"]}}</b>&nbsp;&nbsp;&nbsp;
+                               <span [ngClass]="Get_Status_Class(Part_D['Mark_List_Status'])" style="padding: 3px 10px; border-radius: 12px; font-size: 13px; font-weight: 700;">{{Part_D['Mark_List_Status'] || 'Pending'}}</span></td>
                         <td ><button   class="save-button-style btnflot" (click)="Get_Student_Mark(Part_D,i)" type="submit">View Details</button></td>  
                     </tr>
                 </tbody>
@@ -767,7 +768,7 @@
             </div>
             <div [hidden]="Mark_Hidden==true">
 
-        <div class="form-row mt-2 mb-2 ml-2 mr-2">
+        <div class="form-row mt-2 mb-2 ml-2 mr-2" style="align-items: center;">
             
             <div class="col-md-3 col-sm-3 mb-1">
                 
@@ -778,6 +779,14 @@
             </div>
             <div class="col-md-2 col-sm-2">
                 <th><h4><b style="color: #3f6ad8;font-weight: 900;font-size: 17px;">Year :</b><b style="color: #0db195;font-weight: 900;font-size: 20px;"> {{Mark_List_.Year_Name}}</b></h4> </th>
+            </div>
+            <div class="col-md-4 col-sm-4 mb-1" style="display: flex; align-items: center;">
+                <h4 style="margin: 0; margin-right: 10px;"><b style="color: #3f6ad8;font-weight: 900;font-size: 17px;">Status :</b></h4>
+                <select name="Mark_List_Status" [(ngModel)]="Mark_List_.Mark_List_Status" [disabled]="!is_admin" [ngClass]="Get_Status_Class(Mark_List_.Mark_List_Status)" class="form-control status-dropdown" style="width: auto; font-weight: bold; border-radius: 4px; padding: 4px 8px; height: auto;">
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
             </div>
             <hr class="lineheaderh">
         </div>
@@ -958,7 +967,7 @@
                 <div class="col-md-12 ">
                     <button class="other-button-style btnflot pull-right" (click)="marklist_back()" style="background-color: #191a19;margin-left: 1%;">Back </button>
                 <button class="other-button-style btnflot pull-right" (click)="Save_Mark_List()" style="background-color: #0db195;margin-left: 1%;">Save Mark </button>
-                <button class="save-button-style btnflot"  (click)="Print_Mark_List()" style="background-color: #0db195;margin-left: 33%;" >Print Mark List</button> 
+                <button class="save-button-style btnflot" [disabled]="Mark_List_.Mark_List_Status !== 'Approved'" (click)="Print_Mark_List()" style="background-color: #0db195;margin-left: 33%;" >Print Mark List</button> 
                 <!-- <button class="save-button-style btnflot" (click)="Get_Course_Part_Mark_Div(Mark_List_.Part_Id)" type="submit">Change</button> -->
             </div>
             </div>  
@@ -979,24 +988,32 @@
             <div class=" "   id="Certificate" style="background-color: #fff !important;">
             <div class="dt-card__body" style="margin-left: 8% !important;">
             <form class="mb-0">
-                <div class="form-row mt-1" >
-                <label class="col-md-1 col-sm-1 col-form-label text-sm-right" style="color: black !important;
+                <div class="form-row mt-1" style="align-items: center;">
+                <label class="col-md-2 col-sm-2 col-form-label text-sm-right" style="color: black !important;
     font-size: 14px !important;">Issue Date</label>                          
-                <div class="col-md-3 col-sm-3 mb-1">
+                <div class="col-md-2 col-sm-2 mb-1">
                 <input type="date" class="form-control" placeholder="" name="Student_Course_.Certificate_Date" [(ngModel)]="Student_Course_.Certificate_Date" >
                 </div> 
-                <div class="col-md-1 col-sm-1"></div>
-                <label class="col-md-2 col-sm-1 col-form-label text-sm-right" style="text-align: right;" style="color: black !important;
+                <label class="col-md-2 col-sm-2 col-form-label text-sm-right" style="text-align: right; color: black !important;
     font-size: 14px !important;">Certificate Grade<span style="color:#ef071e; font-size: 22px; vertical-align: -webkit-baseline-middle;">*</span></label>
-                <div class="col-md-3 col-sm-3 ml-4 mb-1">
+                <div class="col-md-2 col-sm-2 mb-1">
                 <input type="text" [(ngModel)]="Student_Course_.Certificate_Grade" name="Certificate_Grade" class="form-control" placeholder="">
+                </div>
+                <label class="col-md-1 col-sm-1 col-form-label text-sm-right" style="text-align: right; color: black !important;
+    font-size: 14px !important;">Status</label>
+                <div class="col-md-2 col-sm-2 mb-1">
+                <select name="Certificate_Status" [(ngModel)]="Student_Course_.Certificate_Status" [disabled]="!is_admin" [ngClass]="Get_Status_Class(Student_Course_.Certificate_Status)" class="form-control status-dropdown p-0 pl-1" style="opacity: 1 !important;">
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
                 </div>
               
                 <!-- <div class="form-row" > -->
                     
                     <div class="col-md-12" style="float: right;">
-                    
-                    <button   class="save-button-style btnflot"  (click)="print_Certificate()"  type="submit">Print Certificate</button>
+                    <button class="save-button-style btnflot mr-1" (click)="Save_Certificate()" type="submit">Save</button>
+                    <button class="save-button-style btnflot" [disabled]="Student_Course_.Certificate_Status !== 'Approved'" (click)="print_Certificate()" type="submit">Print Certificate</button>
                     <!-- </div> -->
                 </div>
             </div>
@@ -1682,7 +1699,7 @@
         <div class="col-md-7 col-sm-7"  >        
         <button class="close-button-style btnflot mr-0" type="submit" (click)="Close_Click()">Close</button>
         <button class="save-button-style btnflot"   [hidden]="Student_Save==false" id="Save_Button" (click)="Save_Student()" type="submit">Save</button>
-        <button class="delete-button-style btnflot" [hidden]="Student_Delete==false" *ngIf="Student_Id_Edit>0"   (click)="Delete_Student(Student_.Student_Id)" type="submit">Delete</button>
+        <button class="delete-button-style btnflot" [hidden]="Student_Delete==false" *ngIf="Student_Id_Edit>0"   (click)="Delete_Student(Student_.Student_Id,Student_EditIndex)" type="submit">Delete</button>
         <button class="other-button-style btnflot"  [hidden]="View_Follow_" (click)="View_Follow_Click_()" type="submit">Follow Up</button>
         <button class="other-button-style btnflot"  [hidden]="View_History_" id="Followup_History" (click)="Followup_History()" type="submit">History</button>
         <button class="other-button-style btnflot"  [hidden]="View_Student_" (click)="View_Student_Click_()" type="submit">View Profile</button>

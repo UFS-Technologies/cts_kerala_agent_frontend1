@@ -154,7 +154,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   MatPaginatorModule,MatSortModule, MatIconModule,MatMenuModule,GoogleChartsModule,MatSelectModule,
   MatButtonModule, MatDialogModule, MatToolbarModule, MatExpansionModule, MatSidenavModule, 
   MatAutocompleteModule, MatProgressSpinnerModule,MatFormFieldModule,MatDatepickerModule,
-  ScrollingModule,FormsModule,NgxBarcode6Module,HttpModule ,CommonModule,ReactiveFormsModule],
+  ScrollingModule,FormsModule,NgxBarcode6Module,HttpModule ,CommonModule,ReactiveFormsModule, MatNativeDateModule],
 
 
 })

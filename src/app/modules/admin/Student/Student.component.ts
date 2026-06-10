@@ -309,6 +309,7 @@ export class StudentComponent implements OnInit {
     Mark_List_Index:number=-1;
     Mark_List_Data_1:Mark_List[]
     Mark_List_Master_:Mark_List_Master = new Mark_List_Master();
+    is_admin: boolean = false;
 
     Receipt_History_View:boolean=false;
     Mode:Mode=new Mode();
@@ -1906,6 +1907,7 @@ Clr_Student_Course()
     this.Student_Course_.Certificate_Date = new Date;
     this.Student_Course_.Certificate_Date = this.New_Date(this.Student_Course_.Certificate_Date);
     this.Student_Course_.Certificate_Grade="";
+    this.Student_Course_.Certificate_Status="Pending";
     this.Student_Course_.By_User_Id=0;
     this.Student_Course_.Status=0;
     this.Course_=null;
@@ -2526,6 +2528,8 @@ Get_Student_Course(Student_Id)
         if(this.Student_Course_Data.length>0)
         {
           this.Student_Course_ = this.Student_Course_Data[0];
+          if(!this.Student_Course_.Certificate_Status)
+              this.Student_Course_.Certificate_Status = 'Pending';
           this.Course_DurationView=this.Student_Course_.Duration + ' ' + this.Student_Course_.Duration_Type_Name
           this.Course_Temp.Course_Id=this.Student_Course_.Course_Id
           this.Course_Temp.Course_Name=this.Student_Course_.Course_Name         
@@ -3247,6 +3251,7 @@ Save_Mark_List()
     this.issLoading=true;
         this.Mark_List_.User_Id = this.Login_User;
         this.Mark_List_.Student_Id = this.Student_Id;
+        this.Mark_List_.Mark_List_Status = 'Pending';
         
         this.Mark_List_.Mark_List_Data = this.Mark_List_Data;
        // if()
@@ -3265,6 +3270,7 @@ Save_Mark_List()
                 this.Student_Mark_Part_Data[this.Marklistindex].Mark_List_Issue_Date=this.Mark_List_.Issue_Date;
                 this.Student_Mark_Part_Data[this.Marklistindex].Mark_List_Issue_Date_T=Save_status[0].Mark_List_Issue_Date_T;
                 this.print_IssueDate=Save_status[0].Mark_List_Issue_Date_T;
+                this.Student_Mark_Part_Data[this.Marklistindex].Mark_List_Status = this.Mark_List_.Mark_List_Status;
   
                 this.Mark_List_.Mark_List_Id=Number(Save_status[0].Mark_List_Id_);
                 const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
@@ -3553,8 +3559,18 @@ Get_Student_Mark(Part,i)
     this.Mark_List_.Year_Name=Part.Year_Name
     this.Mark_List_.Month_Id=Part.Month_Id
     this.Mark_List_.Month_Name=Part.Month_Name
+    this.Mark_List_.Mark_List_Status = Part.Mark_List_Status ? Part.Mark_List_Status : 'Pending';
     this.Part_Id=this.Mark_List_.Part_Id
     this.Get_Course_Part_Mark(this.Part_Id)
+}
+Get_Status_Class(status) {
+    if (status === 'Approved') {
+        return 'status-approved';
+    } else if (status === 'Rejected') {
+        return 'status-rejected';
+    } else {
+        return 'status-pending';
+    }
 }
 Load_Student_Part()
 {
@@ -4178,6 +4194,39 @@ Update_Certificate_Date()
         const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
     }
     this.issLoading=false;
+    },
+    Rows => { 
+        this.issLoading=false;
+        const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:Rows.error.error,Type:"2"}});
+    });
+}
+Save_Certificate()
+{
+    this.Student_Course_.Student_Id = this.Student_Id;
+    this.Student_Course_.Student_Course_Id = this.Student_Course_Id_Edit;
+    if(this.Student_Course_.Certificate_Grade=="" || this.Student_Course_.Certificate_Grade==undefined || this.Student_Course_.Certificate_Grade==null)
+    {
+        const dialogRef = this.dialogBox.open(DialogBox_Component, { panelClass: 'Dialogbox-Class', data: { Message: 'Enter Grade', Type: "3" } });
+        return;
+    }
+    if(!this.is_admin)
+    {
+        this.Student_Course_.Certificate_Status = 'Pending';
+    }
+    this.issLoading=true;
+    this.Student_Course_.Certificate_Date = this.New_Date(new Date(moment(this.Student_Course_.Certificate_Date).format('YYYY-MM-DD')));;
+    this.Student_Course_.Certificate_Date_Search =  this.New_Date(new Date(moment(this.Student_Course_.Certificate_Date).format('YYYY-MM-DD')));;
+
+    this.Student_Service_.Update_Certificate_Date(this.Student_Course_).subscribe(Save_status => {
+        this.issLoading=false;
+        if (Number(Save_status[0].Student_Course_Id_)>0)
+        {
+            const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Saved',Type:"false"}});
+        }
+        else
+        {
+            const dialogRef = this.dialogBox.open( DialogBox_Component, {panelClass:'Dialogbox-Class',data:{Message:'Error Occured',Type:"2"}});
+        }
     },
     Rows => { 
         this.issLoading=false;

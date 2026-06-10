@@ -22,6 +22,7 @@ Course_Type_Id:number;
 Total_Fees:number;
 Certificate_Date:Date;
 Certificate_Grade:string;
+Certificate_Status:string;
 Duration:number;
 Course_Duration_Id:number;
 Certificate_Date_Search:string;
